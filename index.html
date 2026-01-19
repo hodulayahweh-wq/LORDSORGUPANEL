@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LORD SORGU PANEL</title>
+
+<style>
+:root{--neon:#00ff41}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#000;color:#fff}
+.bg{
+  position:fixed;inset:0;
+  background:url("https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif") center/cover no-repeat;
+  z-index:-2
+}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:-1}
+.nav{display:flex;gap:15px;padding:12px;border-bottom:1px solid #111}
+.burger{font-size:24px;color:var(--neon);cursor:pointer}
+.side{
+  position:fixed;left:-260px;top:0;width:250px;height:100%;
+  background:#050505;transition:.3s;z-index:10;overflow:auto
+}
+.side.active{left:0}
+.side h4{margin:12px;color:var(--neon);font-size:12px}
+.side a{display:block;padding:12px;color:#ccc;text-decoration:none;border-bottom:1px solid #111}
+.side a:hover{background:#0b0b0b;color:#fff}
+.main{max-width:800px;margin:auto;padding:15px}
+.card{
+  background:#0b0b0b;border:1px solid #111;border-radius:12px;
+  padding:15px;margin-bottom:15px
+}
+input,button{
+  width:100%;padding:12px;margin-top:8px;
+  background:#000;border:1px solid #222;color:#fff;border-radius:8px
+}
+button{background:var(--neon);color:#000;font-weight:bold;cursor:pointer}
+.res{
+  white-space:pre-wrap;font-family:monospace;color:var(--neon);
+  margin-top:10px;max-height:260px;overflow:auto
+}
+.hidden{display:none}
+.market-btn{
+  background:#0095f6;color:#fff;text-align:center;
+  display:block;padding:12px;border-radius:8px;
+  text-decoration:none;margin-top:10px
+}
+</style>
+</head>
+
+<body>
+<div class="bg"></div><div class="ov"></div>
+
+<div class="nav">
+  <div class="burger" onclick="toggle()">☰</div>
+  <b>LORD SORGU PANEL</b>
+</div>
+
+<div class="side" id="side">
+  <h4>FREE SORGULAR</h4>
+  <a onclick="openPage('gsmtc')">GSM ➜ TC</a>
+  <a onclick="openPage('tcgsm')">TC ➜ GSM</a>
+  <a onclick="openPage('adsoyad')">Ad Soyad</a>
+  <a onclick="openPage('iban')">IBAN</a>
+  <a onclick="openPage('vergi')">Vergi</a>
+
+  <h4>PREMIUM</h4>
+  <a onclick="openPage('market')">VIP Market 🔒</a>
+
+  <h4>TELEGRAM</h4>
+  <a href="https://t.me/lordsystemv3" target="_blank">📢 Kanal</a>
+</div>
+
+<div class="main">
+<div id="home" class="card">Hoş geldin. Menüden sorgu seç.</div>
+
+<div id="gsmtc" class="card hidden">
+<h3>GSM ➜ TC</h3>
+<input id="g1"><button onclick="callAPI('https://zyrdaware.xyz/api/gsmtc?auth=t.me/zyrdaware&gsm=',g1)">SORGULA</button>
+<div class="res" id="r1"></div>
+</div>
+
+<div id="tcgsm" class="card hidden">
+<h3>TC ➜ GSM</h3>
+<input id="t1"><button onclick="callAPI('https://zyrdaware.xyz/api/tcgsm?auth=t.me/zyrdaware&tc=',t1)">SORGULA</button>
+<div class="res" id="r2"></div>
+</div>
+
+<div id="adsoyad" class="card hidden">
+<h3>Ad Soyad</h3>
+<input id="a1"><input id="a2">
+<button onclick="callAPI(`https://zyrdaware.xyz/api/adsoyad?auth=t.me/zyrdaware&ad=${a1.value}&soyad=${a2.value}`)">SORGULA</button>
+<div class="res" id="r3"></div>
+</div>
+
+<div id="iban" class="card hidden">
+<h3>IBAN</h3>
+<input id="i1"><button onclick="callAPI('https://lyranew.ct.ws/api/iban.php?iban=',i1)">SORGULA</button>
+<div class="res" id="r4"></div>
+</div>
+
+<div id="vergi" class="card hidden">
+<h3>Vergi</h3>
+<input id="v1"><button onclick="callAPI('https://nabisorguapis.onrender.com/api/v1/vergi/borc-sorgu?tc=',v1)">SORGULA</button>
+<div class="res" id="r5"></div>
+</div>
+
+<div id="market" class="card hidden">
+<h2>VIP MARKET</h2>
+<p>1 Hafta: 200 TL</p>
+<p>1 Ay: 600 TL</p>
+<p>5 Ay: 1500 TL</p>
+<p>Sınırsız: 3000 TL</p>
+<a class="market-btn" href="https://t.me/LordDestekHat" target="_blank">Telegram’dan Satın Al</a>
+<button onclick="openPage('home')">Geri</button>
+</div>
+</div>
+
+<script>
+function toggle(){document.getElementById("side").classList.toggle("active")}
+function openPage(id){
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  toggle();
+}
+
+// 🔥 VERI TEMIZLEME
+function cleanData(t){
+  return t
+    .replace(/https?:\/\/\S+/gi,'')
+    .replace(/t\.me\/\S+/gi,'')
+    .replace(/discord\.gg\/\S+/gi,'')
+    .replace(/telegram/gi,'')
+    .trim();
+}
+
+async function callAPI(url,input){
+  const res=document.querySelector(".res:not(.hidden)");
+  const final=input?url+input.value:url;
+  res.textContent="Yükleniyor...";
+  try{
+    const r=await fetch(final);
+    let t=await r.text();
+    t=cleanData(t);
+
+    if(t.length>5000){
+      const blob=new Blob([t],{type:"text/plain"});
+      const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);
+      a.download="sonuc.txt";
+      a.click();
+      res.textContent="Büyük veri algılandı → TXT indirildi.";
+    }else{
+      res.textContent=t||"Veri yok";
+    }
+  }catch(e){
+    res.textContent="API yanıt vermedi (CORS olabilir)";
+  }
+}
+</script>
+</body>
+</html>
