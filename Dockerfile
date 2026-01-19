@@ -1,9 +1,9 @@
-FROM php:8.1-cli
+FROM php:8.1-apache
 
-WORKDIR /app
-COPY . .
+WORKDIR /var/www/html
 
-ENV PORT=10000
-EXPOSE 10000
+COPY . /var/www/html
 
-CMD php -S 0.0.0.0:$PORT index.php
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 80
